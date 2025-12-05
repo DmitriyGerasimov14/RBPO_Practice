@@ -4,11 +4,12 @@ on:
   pull_request:
     branches:
       - main
+
 jobs:
   build-job:
     runs-on: ubuntu-latest
     container:
-      image: maven:3.9-eclipse-temurin-21
+      image: maven:3.9-eclipse-temurin-17
 
     steps:
       - name: Checkout repository
@@ -27,3 +28,29 @@ jobs:
         with:
           name: jar-artifacts
           path: target/*.jar
+
+  semgrep-sast:
+    name: Semgrep SAST scan
+    needs: build-job
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep SAST
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: auto
+          generateSarif: "1" # Semgrep сам создаст semgrep.sarif в рабочей директории
+
+      - name: List files (debug)
+        run: ls -R
+
+      - name: Upload SARIF to GitHub
+        if: hashFiles('semgrep.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: semgrep.sarif
