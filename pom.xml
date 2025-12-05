@@ -16,7 +16,7 @@
     <description>course-management</description>
 
     <properties>
-        <java.version>21</java.version>
+        <java.version>17</java.version>
     </properties>
 
     <dependencies>
@@ -71,6 +71,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.14.0</version> <!-- можно и не указывать, но пусть будет явно -->
                 <configuration>
                     <annotationProcessorPaths>
                         <path>
@@ -78,10 +79,14 @@
                             <artifactId>lombok</artifactId>
                         </path>
                     </annotationProcessorPaths>
+
+                    <!-- Критично: явно фиксируем релиз Java -->
+                    <release>${java.version}</release>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
