@@ -44,7 +44,6 @@ jobs:
         uses: returntocorp/semgrep-action@v1
         with:
           config: auto
-          generateSarif: "1" # Semgrep сам создаст semgrep.sarif в рабочей директории
 
       - name: List files (debug)
         run: ls -R
